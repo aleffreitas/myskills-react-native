@@ -11,7 +11,7 @@ type SkillData = {
 export function Home(){
   const [newSkill, setNewSkill] = useState('');
   const [mySkills, setMySkills] = useState<SkillData[]>([]);
-  const [grettings, setGrettings] = useState('');
+  const [greetings, setGreetings] = useState('');
 
   function handleAddNewSkill(){
     const data = {
@@ -22,26 +22,32 @@ export function Home(){
     setMySkills(oldState => [...oldState, data]);
   }
 
-  function defineGrettings(){
+  function handleRemoveSkill(id: string){
+    setMySkills(oldState => oldState.filter(
+      skill => skill.id !== id
+    ));
+  }
+
+  function defineGreetings(){
     const currentHour = new Date().getHours();
 
     if(currentHour < 12 && currentHour > 6){
-      setGrettings('Good morning');
+      setGreetings('Good morning');
     } else if(currentHour < 18 && currentHour >= 12){
-      setGrettings('Good afternoon');
+      setGreetings('Good afternoon');
     } else {
-      setGrettings('Good night');
+      setGreetings('Good night');
     }
   }
 
   useEffect(() => {
-    defineGrettings();
+    defineGreetings();
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome, Alef</Text>
-      <Text style={styles.grettings}>{grettings}</Text>
+      <Text style={styles.greetings}>{greetings}</Text>
 
       <TextInput
         style={styles.input}
@@ -61,7 +67,10 @@ export function Home(){
         data={mySkills}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <SkillCard skill={item.name} />
+          <SkillCard 
+            skill={item.name}
+            onPress={() => handleRemoveSkill(item.id)}  
+          />
         )}
       />
     </View>
@@ -88,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 7
   },
-  grettings: {
+  greetings: {
     color: '#FFF'
   }
 });
